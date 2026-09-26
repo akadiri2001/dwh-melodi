@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:ContextType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" xmi:id="_RbS_YK7QEfGylrhSDNWu9A" confirmationNeeded="false" name="Default">
+  <contextParameter xmi:id="_RbS_Ya7QEfGylrhSDNWu9A" comment="" name="id_execution" prompt="id_execution?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_RbS_Yq7QEfGylrhSDNWu9A" comment="" name="nom_job" prompt="nom_job?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_RbS_Y67QEfGylrhSDNWu9A" comment="" name="version_job" prompt="version_job?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_RbS_ZK7QEfGylrhSDNWu9A" comment="" name="etape" prompt="etape?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_RbS_Za7QEfGylrhSDNWu9A" comment="" name="statut" prompt="statut?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_RbS_Z67QEfGylrhSDNWu9A" comment="" name="duree_ms" prompt="duree_ms?" promptNeeded="false" type="id_Long" value=""/>
+  <contextParameter xmi:id="_RbS_aK7QEfGylrhSDNWu9A" comment="" name="nb_lignes_lues" prompt="nb_lignes_lues?" promptNeeded="false" type="id_Long" value=""/>
+  <contextParameter xmi:id="_RbS_aa7QEfGylrhSDNWu9A" comment="" name="nb_lignes_inserees" prompt="nb_lignes_inserees?" promptNeeded="false" type="id_Long" value=""/>
+  <contextParameter xmi:id="_RbS_aq7QEfGylrhSDNWu9A" comment="" name="nb_lignes_rejetees" prompt="nb_lignes_rejetees?" promptNeeded="false" type="id_Long" value=""/>
+  <contextParameter xmi:id="_jo2mwLU4EfGYz_T56F0K7w" comment="" name="message_erreur" prompt="message_erreur?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_jo2mwbU4EfGYz_T56F0K7w" comment="" name="index_cible" prompt="index_cible?" promptNeeded="false" type="id_String" value=""/>
+  <contextParameter xmi:id="_2MWhsLU5EfGYz_T56F0K7w" comment="" name="donnees_extra" prompt="donnees_extra?" promptNeeded="false" type="id_String" value="{}"/>
+  <contextParameter xmi:id="_2MWhsbU5EfGYz_T56F0K7w" comment="" name="log_repertoire" prompt="log_repertoire?" promptNeeded="false" type="id_String" value="D:/Outil_data/projet_data/dwh-melodi/logs"/>
+  <contextParameter xmi:id="_2MWhsrU5EfGYz_T56F0K7w" comment="" name="env_nom" prompt="env_nom?" promptNeeded="false" type="id_String" value="local"/>
+</talendfile:ContextType>
