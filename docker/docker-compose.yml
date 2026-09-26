@@ -1,0 +1,123 @@
+name: dwh-melodi
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dwh-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_SUPERUSER}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD}
+      POSTGRES_DB: dwh
+      ETL_USER: ${POSTGRES_ETL_USER}
+      ETL_PASSWORD: ${POSTGRES_ETL_PASSWORD}
+      BI_USER: ${POSTGRES_BI_USER}
+      BI_PASSWORD: ${POSTGRES_BI_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../sql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_SUPERUSER} -d dwh"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - dwh-net
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: dwh-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -u elastic:${ELASTIC_PASSWORD} http://localhost:9200/_cluster/health | grep -qE '\"status\":\"(green|yellow)\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks:
+      - dwh-net
+    restart: unless-stopped
+
+  # Positionne le mot de passe du compte interne kibana_system, puis se termine.
+  es-setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: dwh-es-setup
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    entrypoint: ["bash", "-c", "until [ \"$$(curl -s -o /dev/null -w '%{http_code}' -u elastic:$${ELASTIC_PASSWORD} -X POST http://elasticsearch:9200/_security/user/kibana_system/_password -H 'Content-Type: application/json' -d \"{\\\"password\\\":\\\"$${KIBANA_SYSTEM_PASSWORD}\\\"}\")\" = \"200\" ]; do echo 'en attente...'; sleep 5; done; echo 'kibana_system configure.'"]
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD}
+    networks:
+      - dwh-net
+    restart: "no"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: dwh-kibana
+    depends_on:
+      es-setup:
+        condition: service_completed_successfully
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_SYSTEM_PASSWORD}
+      - XPACK_SECURITY_ENCRYPTIONKEY=${KIBANA_ENCRYPTION_KEY}
+      - XPACK_REPORTING_ENCRYPTIONKEY=${KIBANA_ENCRYPTION_KEY}
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${KIBANA_ENCRYPTION_KEY}
+    ports:
+      - "5601:5601"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:5601/api/status | grep -q available"]
+      interval: 15s
+      timeout: 5s
+      retries: 30
+    networks:
+      - dwh-net
+    restart: unless-stopped
+
+  # Collecte les logs NDJSON produits par le joblet jl_log_execution.
+  # Démarrage optionnel : docker compose --profile supervision up -d
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.15.0
+    container_name: dwh-filebeat
+    profiles: ["supervision"]
+    user: root
+    command: ["--strict.perms=false"]
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ../logs:/logs:ro
+      - filebeatdata:/usr/share/filebeat/data
+    networks:
+      - dwh-net
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  esdata:
+  filebeatdata:
+
+networks:
+  dwh-net:
+    driver: bridge

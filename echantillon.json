@@ -1,0 +1,81 @@
+﻿{
+  "observations" : [ {
+    "dimensions" : {
+      "GEO" : "2025-COM-15113",
+      "FREQ" : "A",
+      "TIME_PERIOD" : "2010",
+      "POPREF_MEASURE" : "PMUN"
+    },
+    "measures" : {
+      "OBS_VALUE_NIVEAU" : {
+        "value" : 197.0
+      }
+    }
+  }, {
+    "dimensions" : {
+      "GEO" : "2025-COM-14491",
+      "FREQ" : "A",
+      "TIME_PERIOD" : "2007",
+      "POPREF_MEASURE" : "PMUN"
+    },
+    "measures" : {
+      "OBS_VALUE_NIVEAU" : {
+        "value" : 154.0
+      }
+    }
+  }, {
+    "dimensions" : {
+      "GEO" : "2025-COM-14761",
+      "FREQ" : "A",
+      "TIME_PERIOD" : "2011",
+      "POPREF_MEASURE" : "PMUN"
+    },
+    "measures" : {
+      "OBS_VALUE_NIVEAU" : {
+        "value" : 746.0
+      }
+    }
+  }, {
+    "dimensions" : {
+      "GEO" : "2025-COM-14700",
+      "FREQ" : "A",
+      "TIME_PERIOD" : "2018",
+      "POPREF_MEASURE" : "PMUN"
+    },
+    "measures" : {
+      "OBS_VALUE_NIVEAU" : {
+        "value" : 663.0
+      }
+    }
+  }, {
+    "dimensions" : {
+      "GEO" : "2025-COM-15038",
+      "FREQ" : "A",
+      "TIME_PERIOD" : "2013",
+      "POPREF_MEASURE" : "PMUN"
+    },
+    "measures" : {
+      "OBS_VALUE_NIVEAU" : {
+        "value" : 1040.0
+      }
+    }
+  } ],
+  "identifier" : "DS_POPULATIONS_HISTORIQUES",
+  "paging" : {
+    "first" : "https://api.insee.fr/melodi/data/DS_POPULATIONS_HISTORIQUES?maxResult=5&page=1"
+  },
+  "publisher" : {
+    "id" : "INSEE",
+    "label" : [ {
+      "content" : "Institut national de la statistique et des etudes economiques (INSEE)",
+      "lang" : "fr"
+    }, {
+      "content" : "National Institute of Statistics and Economic Studies",
+      "lang" : "en"
+    } ]
+  },
+  "title" : {
+    "en" : "Municipal populations from 1968 to 2023",
+    "fr" : "Populations municipales de 1968 ├á 2023"
+  }
+}

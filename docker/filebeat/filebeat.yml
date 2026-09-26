@@ -1,0 +1,27 @@
+filebeat.inputs:
+  - type: filestream
+    id: etl-jobs
+    enabled: true
+    paths:
+      - /logs/*.ndjson
+    parsers:
+      - ndjson:
+          target: ""
+          overwrite_keys: true
+          add_error_key: true
+
+processors:
+  - drop_fields:
+      fields: ["agent", "ecs", "input", "host"]
+      ignore_missing: true
+
+setup.ilm.enabled: false
+setup.template.name: "logs-etl"
+setup.template.pattern: "logs-*"
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "${ELASTIC_PASSWORD}"
+  # L'index cible est porte par le champ index_cible produit par le joblet.
+  index: "%{[index_cible]:logs-etl-jobs}-%{+yyyy.MM.dd}"
